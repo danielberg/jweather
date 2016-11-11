@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.dberg.jweather</groupId>
-	<artifactId>jweather</artifactId>
+	<artifactId>jxweather</artifactId>
 	<version>0.3.2-SNAPSHOT</version>
-	<name>jweather</name>
+	<name>jxweather</name>
 	<description>This is a fork of jweather (https://github.com/arimus/jweather). 
 	This fork mostly contains a simpler dependency graph with no oro or apache commons http client or any external jar actually. All features in the original project that had such dependencies are rewritten to be run with plain java 1.6
 
@@ -14,8 +14,8 @@
 	data, but may grow to include access to multiple reporting formats.
 	Original developers David Castro, Dennis Keller and Brian Clasky.
 	</description>
-	<url>http://jweather.sourceforge.net/</url>
-	<inceptionYear>2003</inceptionYear>
+	<url>https://github.com/danielberg/jweather</url>
+	<inceptionYear>2016</inceptionYear>
 	<properties>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
@@ -26,20 +26,12 @@
 		<artifactId>oss-parent</artifactId>
 		<version>3</version>
 	</parent>
-	<organization>
-		<name>jWeather SourceForge Project</name>
-		<url>http://jweather.sourceforge.net/</url>
-	</organization>
+
 	<developers>
 		<developer>
 			<id>dberg</id>
 			<name>Daniel Berg</name>
 			
-			<organization />
-			<roles>
-				<role>Project Founder</role>
-				<role>Lead Developer</role>
-			</roles>
 		</developer>
 		
 	</developers>
