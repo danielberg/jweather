@@ -2,13 +2,17 @@ jWeather (TM) v0.3.2.SNAPSHOT
 Copyright (C) 2003, Azusa Pacific University
 Contact:  David Castro <dcastro@apu.edu>
 
+>This is a fork of jweather (https://github.com/arimus/jweather). 
+
+This fork mostly contains a simpler dependency graph with no oro or apache commons http client or any external jar. 
+All features in the original project that had such dependencies are rewritten to be run with plain java 1.6.
+Quite possibly we'll rewrite the whole thing and release a new one - but this is LGPL so here are my current modification published :)
+
 jWeather is a Java library for parsing raw weather data (e.g. METAR, TAF).
 Initially it will focus on parsing and providing an API for access to METAR
 data, but may grow to include access to multiple reporting formats.
 
-Please see LICENSE in this directory for jWeather licensing information.  See
-LICENSE_log4j and LICENSE_oro respectively for Log4j and ORO licensing
-information.  Log4j and ORO are bundled with jWeather for convenience.
+Please see LICENSE in this directory for jWeather licensing information.  
 
 Thanks to the National Oceanic and Atmospheric Administration for the work they
 have done to provide this data to the public.  More information regarding
@@ -30,29 +34,26 @@ Comments and feedback greatly welcome.
 
 
 Requirements:
-  Java 2 SDK 1.3+
-  Apache Ant 1.4+
+  Java 2 SDK 1.6
+  maven 3
 
 Building:
-  type 'ant'
+  type 'mvn clean package'
 
-  should have your jar file in ./dist
+  should have your jar file in ./target
 
 Testing:
   optionally change the station id in the build.xml file.  To do this, change
   the argument specified for 'test' target to a valid station id (see
   stations.txt for a list of valid stations).
 
-  Log4j setting can be modified in properties/log4j.properties
-
-  type 'ant test'
+  Log4j setting must be provided by user
 
   with any luck, you should now be seeing parsed weather data
 
 Notes:
-  remember that you will need both Log4j and ORO on the classpath for any
-  applications that use jWeather.
+
   
 Problems/questions/suggestions:
-  David Castro <dcastro@apu.edu>
+  daniel berg g95232300@gmail.com
  
