@@ -1,6 +1,8 @@
 Changelog
 ---------
-
+Changes in 0.3.2-SNAPSHOT
+ * Removed dependencies on oro for regex, apache commons-httpclient, and log4j.
+ 
 Changes since 0.2.4
 	* added copyright/license text to all source files
 	* updated license to LGPL from GPL

@@ -23,7 +23,8 @@ package net.sf.jweather.metar;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
+
 
 /**
  * Responsible for storing METAR data and providing methods for accessing
@@ -69,7 +70,7 @@ public class Metar {
 
 	public Metar() {
     	log = Logger.getLogger("net.sf.jweather");
-		log.debug("Metar: instantiated");
+		log.fine("Metar: instantiated");
 	}
 
     /**

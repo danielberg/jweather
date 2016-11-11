@@ -25,8 +25,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
-
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Responsible for downloading the METAR reports 
@@ -52,7 +51,7 @@ public class MetarFetcher {
 
 	static {
     	log = Logger.getLogger("net.sf.jweather");
-		log.debug("MetarFetcher: instantiated");
+		log.fine("MetarFetcher: instantiated");
 	}
 
 	public static String fetch(String station)throws Exception {
@@ -69,7 +68,7 @@ public class MetarFetcher {
 		
 			// set the timeout is specified
 			if (timeout != 0) {
-				log.debug("MetarFetch: setting timeout to '"+timeout+"' milliseconds");
+				log.fine("MetarFetch: setting timeout to '"+timeout+"' milliseconds");
 				long start = System.currentTimeMillis();
 				openConnection.setConnectTimeout(timeout);
 				long end = System.currentTimeMillis();
@@ -83,7 +82,7 @@ public class MetarFetcher {
 
 		// check that we didn't run out of retries
 		if (openConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-			log.error("failed to download station data for '"+station+"'");
+			log.severe("failed to download station data for '"+station+"'");
 			return null;
 		} else {
 			
@@ -96,7 +95,7 @@ public class MetarFetcher {
 			}
 			is.close();
 			metarData = new String(bos.toByteArray(),getCharset( openConnection.getContentType())) + "\n";
-			log.debug("MetarFetcher: metar data: " + metarData);
+			log.fine("MetarFetcher: metar data: " + metarData);
 		}
 		}finally{
 			if(openConnection!=null)openConnection.disconnect();

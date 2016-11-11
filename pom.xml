@@ -2,13 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.sourceforge.jweather</groupId>
+	<groupId>net.dberg.jweather</groupId>
 	<artifactId>jweather</artifactId>
-	<version>0.3.1-SNAPSHOT</version>
+	<version>0.3.2-SNAPSHOT</version>
 	<name>jweather</name>
-	<description>jweather is a Java library for parsing raw weather data (e.g. METAR, TAF).
+	<description>This is a fork of jweather (https://github.com/arimus/jweather). 
+	This fork mostly contains a simpler dependency graph with no oro or apache commons http client or any external jar actually. All features in the original project that had such dependencies are rewritten to be run with plain java 1.6
+
+	It is a Java library for parsing raw weather data (e.g. METAR, TAF).
 	Initially it will focus on parsing and providing an API for access to METAR
-	data, but may grow to include access to multiple reporting formats.</description>
+	data, but may grow to include access to multiple reporting formats.
+	Original developers David Castro, Dennis Keller and Brian Clasky.
+	</description>
 	<url>http://jweather.sourceforge.net/</url>
 	<inceptionYear>2003</inceptionYear>
 	<properties>
@@ -27,64 +32,26 @@
 	</organization>
 	<developers>
 		<developer>
-			<id>arimus</id>
-			<name>David Castro</name>
-			<email>arimus@users.sourceforge.net</email>
+			<id>dberg</id>
+			<name>Daniel Berg</name>
+			
 			<organization />
 			<roles>
 				<role>Project Founder</role>
 				<role>Lead Developer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>DennisKeller</id>
-			<name>Dennis Keller</name>
-			<email>kellerds@users.sourceforge.net</email>
-			<organization>Bullamanka.com</organization>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>BrianClasky</id>
-			<name>Brian Clasky</name>
-			<email>quicksilver62@users.sourceforge.net</email>
-			<organization />
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
+		
 	</developers>
 	<scm>
-		<connection>scm:svn:https://jweather.svn.sourceforge.net/svnroot/jweather/trunk/</connection>
-		<url>http://jweather.svn.sourceforge.net/viewvc/jweather/</url>
-		<developerConnection>scm:svn:https://jweather.svn.sourceforge.net/svnroot/jweather/trunk/</developerConnection>
+		<connection>scm:git:https://github.com/danielberg/jweather.git</connection>
+		<url>https://github.com/danielberg/jweather</url>
+		<developerConnection>scm:svn:https://github.com/danielberg/jweather.git</developerConnection>
 	</scm>
-	<issueManagement>
-		<url>http://sourceforge.net/tracker/?atid=607846&amp;group_id=94418&amp;func=browse</url>
-	</issueManagement>
-	<ciManagement>
-		<notifiers>
-			<notifier>
-				<configuration>
-					<address>arimus@users.sourceforge.net</address>
-				</configuration>
-			</notifier>
-		</notifiers>
-	</ciManagement>
-	<distributionManagement>
-		<site>
-			<id>default</id>
-			<name>Default Site</name>
-			<url>scp://sourceforge.net/projects/jweather/</url>
-		</site>
-	</distributionManagement>
+
+
 	<dependencies>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.8</version>
-		</dependency>
+
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -108,8 +75,6 @@
 				<directory>${basedir}</directory>
 				<includes>
 					<include>LICENSE</include>
-					<include>LICENSE_log4j</include>
-					<include>LICENSE_oro</include>
 					<include>LICENSE_junit</include>
 					<include>README</include>
 					<include>INFO</include>
@@ -130,25 +95,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<reporting>
-		<plugins>
 
-			<plugin>
-				<artifactId>maven-changes-plugin</artifactId>
-				<version>2.3</version>
-				<inherited>false</inherited>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>changes-report</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-				<configuration>
-					<issueLinkTemplate>http://sourceforge.net/support/tracker.php?aid=%ISSUE%</issueLinkTemplate>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 
 </project>

@@ -22,7 +22,7 @@ package net.sf.jweather;
 
 import java.io.*;
 import java.net.*;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import net.sf.jweather.metar.*;
 
 /**
@@ -52,7 +52,7 @@ public class Weather {
 
 	static {
 		log = Logger.getLogger("net.sf.jweather");
-		log.debug("Weather: instantiated");
+		log.fine("Weather: instantiated");
 	}
 
 	public static Metar getMetar(String station) {
@@ -66,7 +66,7 @@ public class Weather {
 			String metarData = MetarFetcher.fetch(station, timeout);
 			if (metarData != null) {
 
-				metar = MetarParser.parse(metarData);
+				metar = MetarParser.parseRecord(metarData);
 
 			}
 		} catch (Exception e) {
