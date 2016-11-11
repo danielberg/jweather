@@ -1,8 +1,10 @@
-jWeather (TM) v0.3.2.SNAPSHOT
-Copyright (C) 2003, Azusa Pacific University
-Contact:  David Castro <dcastro@apu.edu>
+jxWeather v0.3.2.SNAPSHOT
+Copyright (C) 2003, Azusa Pacific University and Daniel Berg (C) 2016
 
->This is a fork of jweather (https://github.com/arimus/jweather). 
+Original Contact:  David Castro <dcastro@apu.edu>
+Contact : Daniel Berg g95232300@gmail.com
+
+This is a fork of jweather (https://github.com/arimus/jweather). 
 
 This fork mostly contains a simpler dependency graph with no oro or apache commons http client or any external jar. 
 All features in the original project that had such dependencies are rewritten to be run with plain java 1.6.
