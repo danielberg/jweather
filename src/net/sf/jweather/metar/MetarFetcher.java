@@ -20,14 +20,13 @@ For more information, please email arimus@users.sourceforge.net
 */
 package net.sf.jweather.metar;
 
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
+
 import org.apache.log4j.Logger;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.HttpRecoverableException;
-import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
  * Responsible for downloading the METAR reports 
@@ -45,7 +44,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 public class MetarFetcher {
 	private static Logger log = null;
 	private static String metarData = null;
-
+	static final Charset defaultCharset = Charset.forName("UTF-8");
 	final static String httpMetarURL = "http://weather.noaa.gov/pub/data/observations/metar/stations/";
 	//final static String httpMetarHostname =  "weather.noaa.gov";
 	//final static int    httpMetarPort     =  80;
@@ -56,64 +55,74 @@ public class MetarFetcher {
 		log.debug("MetarFetcher: instantiated");
 	}
 
-	public static String fetch(String station) {
+	public static String fetch(String station)throws Exception {
 		return fetch(station, 0);
 	}
 
-	public static String fetch(String station, int timeout) {
+	public static String fetch(String station, int timeout) throws Exception{
 		metarData = null;
 
-		// create the http client
-		HttpClient client = new HttpClient();
-
-		// set the timeout is specified
-		if (timeout != 0) {
-			log.debug("MetarFetch: setting timeout to '"+timeout+"' milliseconds");
-			long start = System.currentTimeMillis();
-			client.setConnectionTimeout(timeout);
-			long end = System.currentTimeMillis();
-			if (end - start < timeout) {
-				client.setTimeout((int)(end - start));
-			} else {
-				return null;
+		HttpURLConnection openConnection = null;
+		try{
+		URL url = new URL(httpMetarURL + station + ".TXT");
+		 openConnection =(HttpURLConnection)url.openConnection();
+		
+			// set the timeout is specified
+			if (timeout != 0) {
+				log.debug("MetarFetch: setting timeout to '"+timeout+"' milliseconds");
+				long start = System.currentTimeMillis();
+				openConnection.setConnectTimeout(timeout);
+				long end = System.currentTimeMillis();
+				if (end - start < timeout) {
+					openConnection.setReadTimeout((int)(end - start));
+				} else {
+					return null;
+				}
 			}
-		}
-
-		// create the http method we will use
-		HttpMethod method = new GetMethod(httpMetarURL + station + ".TXT");
-
-		// connect to the NOAA site, retrying up to the specified num
-		int statusCode = -1;
-		//for (int attempt = 0; statusCode == -1 && attempt < 3; attempt++) {
-			try {
-				// execute the get method
-				log.debug("MetarFetcher: downloading data for station '"+station+"'");
-				statusCode = client.executeMethod(method);
-			} catch (HttpRecoverableException e) {
-				log.error("a recoverable exception occurred, " +
-						  "retrying." + e.getMessage());
-			} catch (IOException e) {
-				log.error("failed to download file: "+e);
-			}
-		//}
+		
 
 		// check that we didn't run out of retries
-		if (statusCode != HttpStatus.SC_OK) {
+		if (openConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
 			log.error("failed to download station data for '"+station+"'");
 			return null;
 		} else {
-			// read the response body
-			byte[] responseBody = method.getResponseBody();
-
-			// release the connection
-			method.releaseConnection();
-
-			// deal with the response.
-			// FIXME - ensure we use the correct character encoding here
-			metarData = new String(responseBody) + "\n";
+			
+			InputStream is = url.openStream();
+			int l = openConnection.getContentLength();
+			ByteArrayOutputStream bos = new ByteArrayOutputStream(l);
+			int read = 0; byte[] b = new byte[l];
+			while( -1 !=( read= is.read(b))){
+				bos.write(b,0, read);
+			}
+			is.close();
+			metarData = new String(bos.toByteArray(),getCharset( openConnection.getContentType())) + "\n";
 			log.debug("MetarFetcher: metar data: " + metarData);
 		}
-
+		}finally{
+			if(openConnection!=null)openConnection.disconnect();
+		}
 		return metarData;
+	}
+	static Charset getCharset(String contentType){
+		
+		String charset = "UTF-8";
+		if(contentType==null || contentType.length()<2)
+			return defaultCharset;
+		String[] values = contentType.split(";");
+		if(values.length>5)return defaultCharset;
+		
+		for (String value : values) {
+		    value = value.trim();		    
+		    if (value.toLowerCase().startsWith("charset=")) {
+		        charset = value.substring("charset=".length());
+		    }
+		}
+
+		if ("".equals(charset)) {
+		    charset = "UTF-8"; //Assumption
+		}
+		return Charset.isSupported(charset)?Charset.forName(charset):defaultCharset;
+		
+
 	}
 }

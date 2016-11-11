@@ -22,15 +22,15 @@ package net.sf.jweather.metar;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.ArrayList;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.perl.MalformedPerl5PatternException;
-import org.apache.oro.text.perl.Perl5Util;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.apache.log4j.Logger;
 
 /*
@@ -102,9 +102,10 @@ import org.apache.log4j.Logger;
 public class MetarParser {
     private static Logger log = Logger.getLogger("net.sf.jweather.MetarParser");
 
-    private static Perl5Util utility = new Perl5Util();
+    
+    //private static Perl5Util utility = new Perl5Util();
 
-    private static Perl5Matcher matcher = new Perl5Matcher();
+    //private static Perl5Matcher matcher = new Perl5Matcher();
 
     private static SimpleDateFormat sdf = new SimpleDateFormat(
             "yyyy/MM/dd HH:mm");
@@ -161,12 +162,12 @@ public class MetarParser {
             throws MetarParseException {
         String dateString = null;
         String metarString = null;
-        ArrayList splitData = new ArrayList();
-        Perl5Util utility = new Perl5Util();
+        List<String> splitData = new ArrayList();
+
 
         // split the two lines of raw metar data apart
-        utility.split(splitData, "/\\n/", metarData);
-
+        split(splitData, "\n", metarData);
+        
         dateString = (String) splitData.get(0);
         return parseReport((String) splitData.get(0), (String) splitData.get(1));
     }
@@ -226,6 +227,11 @@ public class MetarParser {
         return metar;
     }
 
+    public static void split(List<String> result, String regex, String input ){
+    	
+    	String[] split = input.split(regex);        
+        result.addAll(Arrays.asList(split));
+    }
     /**
      * Parse metar report (no DateString line parsed) as extracted from a METAR
      * file. Example:
@@ -276,8 +282,9 @@ public class MetarParser {
             // for
             // processing
             try {
-                utility.split(tokens, metarString);
-            } catch (MalformedPerl5PatternException e) {
+            	tokens.addAll(Arrays.asList(metarString.split("\\s")));
+                //utility.split(tokens, metarString);
+            } catch (PatternSyntaxException  e) {
                 log
                         .error("MetarParser: error spliting metar data on whitespace: "
                                 + e);
@@ -460,8 +467,8 @@ public class MetarParser {
                     // (((String)tokens.get(index)).substring(pos+2,pos+2).matches("\\d"))
                     // {
                     try {
-                        if (matcher.matches(temp, new Perl5Compiler()
-                                .compile("\\d"))) {
+                    	
+                        if (temp.matches("\\d")) {
                             // have three-digit wind speed
                             log
                                     .debug("MetarParser: have three-digit wind speed");
@@ -485,7 +492,7 @@ public class MetarParser {
                                                 pos, pos + 2)));
                             }
                         }
-                    } catch (MalformedPatternException e) {
+                    } catch (PatternSyntaxException e) {
                         log.error("MetarParser: error matching wind gusts: "
                                 + e);
                     }
@@ -516,8 +523,7 @@ public class MetarParser {
                 // if we have variable wind direction
                 temp = ((String) tokens.get(index));
                 try {
-                    if (matcher.matches(temp, new Perl5Compiler()
-                            .compile(".*\\d\\d\\dV\\d\\d\\d"))) {
+                    if (temp.matches(".*\\d\\d\\dV\\d\\d\\d")) {
                         metar.setWindDirectionIsVariable(true);
 
                         metar.setWindDirectionMin(new Integer(((String) tokens
@@ -535,7 +541,7 @@ public class MetarParser {
                             index++;
                         }
                     }
-                } catch (MalformedPatternException e) {
+                } catch (PatternSyntaxException e) {
                     log
                             .error("MetarParser: error matching variable wind speed: "
                                     + e);
@@ -625,8 +631,9 @@ public class MetarParser {
                     // we have a fraction to convert
                     ArrayList frac = new ArrayList();
                     try {
-                        utility.split(frac, "/\\//", fraction);
-                    } catch (MalformedPerl5PatternException e) {
+                    	
+                        split(frac, "/", fraction);
+                    } catch (PatternSyntaxException e) {
                         log
                                 .error("MetarParser: error spliting fraction on /: "
                                         + e);
@@ -656,7 +663,7 @@ public class MetarParser {
                 String token = (String) tokens.get(index);
                 boolean isLessThan = false;
 
-                if (utility.match("/^M?\\d+(N|NE|E|SE|S|SW|W|NW)?$/", token)) {
+                if (Pattern.matches("^M?\\d+(N|NE|E|SE|S|SW|W|NW)?$", token)) {
                     log.debug("MetarParser: visibility");
                     
                     if (token.startsWith("M")) {
@@ -1093,8 +1100,10 @@ public class MetarParser {
                 ArrayList temps = new ArrayList();
 
                 try {
-                    utility.split(temps, "/\\//", ((String) tokens.get(index)));
-                } catch (MalformedPerl5PatternException e) {
+                	
+                    split(temps, "/", ((String) tokens.get(index)));
+                    
+                } catch (PatternSyntaxException  e) {
                     log.error("MetarParser: error spliting temperature on /: "
                             + e);
                     throw new MetarParseException(
@@ -1314,8 +1323,8 @@ public class MetarParser {
                 temp = (String) tokens.get(index);
                 //if (((String)tokens.get(index)).matches("T\\d{8}")) {
                 try {
-                    if (matcher.matches(temp, new Perl5Compiler()
-                            .compile("T\\d{8}"))) {
+                	
+                	if(temp.matches("T\\d{8}")) {
                         log.debug("MetarParser: found detailed temp: "
                                 + ((String) tokens.get(index)));
                         // we have a sub-zero temperature
@@ -1406,7 +1415,7 @@ public class MetarParser {
                         // have no significant change
                         metar.setIsNoSignificantChange(true);
                     }
-                } catch (MalformedPatternException e) {
+                } catch (PatternSyntaxException e) {
                     log
                             .error("MetarParser: error matching additional remarks: "
                                     + e);

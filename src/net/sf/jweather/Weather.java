@@ -17,7 +17,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 For more information, please email arimus@users.sourceforge.net
-*/
+ */
 package net.sf.jweather;
 
 import java.io.*;
@@ -45,12 +45,13 @@ public class Weather {
 	private static Logger log = null;
 
 	final static String httpMetarURL = "http://weather.noaa.gov/pub/data/observations/metar/stations/";
-	//final static String httpMetarHostname =  "weather.noaa.gov";
-	//final static int    httpMetarPort     =  80;
-	//final static String httpMetarPath     = "/pub/data/observations/metar/stations/";
+	// final static String httpMetarHostname = "weather.noaa.gov";
+	// final static int httpMetarPort = 80;
+	// final static String httpMetarPath =
+	// "/pub/data/observations/metar/stations/";
 
 	static {
-    	log = Logger.getLogger("net.sf.jweather");
+		log = Logger.getLogger("net.sf.jweather");
 		log.debug("Weather: instantiated");
 	}
 
@@ -59,18 +60,19 @@ public class Weather {
 	}
 
 	public static Metar getMetar(String station, int timeout) {
-		String metarData = MetarFetcher.fetch(station, timeout);
+
 		Metar metar = null;
+		try {
+			String metarData = MetarFetcher.fetch(station, timeout);
+			if (metarData != null) {
 
-		if (metarData != null) {
-			try {
 				metar = MetarParser.parse(metarData);
-			} catch (Exception e) {
-				System.err.println("Weather: "+e);
-				e.printStackTrace(System.err);
-			}
-		}
 
+			}
+		} catch (Exception e) {
+			System.err.println("Weather: " + e);
+			e.printStackTrace(System.err);
+		}
 		return metar;
 	}
 }

@@ -736,6 +736,19 @@ public class Metar {
 		return skyConditions;
 	}
 
+	public int getMinimumCloudCoverSCR(){
+		int minimumHeight = Integer.MAX_VALUE;
+		Iterator it = skyConditions.iterator();
+		while(it.hasNext()){
+			SkyCondition sc = (SkyCondition)it.next();
+			if( sc.isClear()|| sc.isNoSignificantClouds() || sc.isFewClouds() )
+				continue;
+			if(sc.getHeight()<minimumHeight)minimumHeight=sc.getHeight();
+		}
+		
+		return(minimumHeight==Integer.MAX_VALUE)?-1:minimumHeight;
+		
+	}
 	/**
 	 *
 	 * @param rvr a RunwayVisualRange object
